@@ -1,22 +1,19 @@
-#include "includes/malloc.h"
+#include "../includes/malloc.h"
 
 void    *search_alloc_realloc(void *ptr, size_t size, t_header *list)
 {
     void    *ret;
-
     while (list)
     {
-        if (list + 1 == ptr)
+        if (list->adresse == ptr)
         {
-            if (list->size >= size)
-                return (ptr);
+            if (!(ret = malloc(size)))
+                return NULL;
+            if (size < list->size)
+                ft_memcpy(ret, ptr, size);
             else
-            {
-                if (!(ret = malloc(size)))
-                    return NULL;
                 ft_memcpy(ret, ptr, list->size);
-                free(ptr);
-            }
+            free(ptr);
             return (ret);
         }
         list = list->next;

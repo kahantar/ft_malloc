@@ -1,4 +1,4 @@
-#include "includes/malloc.h"
+#include "../includes/malloc.h"
 
 
 int     search_alloc_large_free(void *ptr, t_header *list)
@@ -7,23 +7,24 @@ int     search_alloc_large_free(void *ptr, t_header *list)
     
     tmp = list;
     size_t i;
-    if (tmp + 1 == ptr)
+
+    if (tmp && tmp->adresse == ptr)
     {
-        i = tmp->size + 32;
+        i = tmp->size;
         glob.large_block = tmp->next;
-            munmap(ptr - 32, i);
+        munmap(ptr, i);
     }
     else{
         while (tmp)
         {
-            if (tmp->next + 1 == ptr)
+            if (tmp->next->adresse == ptr)
             {
-                i = tmp->size + 32;
+                i = tmp->size;
                 if (list->next->next)
                     list->next = list->next->next;
                 else
                     list->next = NULL;
-                munmap(ptr - 32, i);
+                munmap(ptr, i);
             }
             list = list->next;
             tmp = list;
@@ -48,6 +49,7 @@ int     search_alloc_free(void *ptr, t_header *list)
 
 void    free(void *ptr)
 {
+
     if (ptr != NULL)
         if (!search_alloc_free(ptr, glob.tiny_block))
             if (!search_alloc_free(ptr, glob.small_block))

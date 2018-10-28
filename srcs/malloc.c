@@ -1,4 +1,4 @@
-#include "includes/malloc.h"
+#include "../includes/malloc.h"
 
 t_block             glob;
 
@@ -22,7 +22,7 @@ t_header    *load_zone(void *memory, int shift, size_t size)
     {
         list->size = size;
         list->is_free = 0;
-        list->adresse = (void*)list + size + sizeof(t_header);
+        list->adresse = (void*)list + sizeof(t_header);
         if (i == BLOCKS - 1)
             tmp = NULL;
         else
@@ -37,20 +37,22 @@ t_header    *load_zone(void *memory, int shift, size_t size)
 t_header    *load_zone_large(void *memory, size_t size)
 {
     t_header *ret;
-    int      size_zone;
+    size_t      size_zone;
 
-    if (memory == NULL)
+    if (memory == NULL){
         return NULL;
-    ret = memory;
+    }
+    if(!(ret = malloc(sizeof(t_header*))))
+        return NULL;
     if ((size % 4096) == 0){
         size_zone = size;
     }
     else{
         size_zone = ((size / 4096) + 1) * 4096;
     }
-    ret->adresse = memory + size_zone;
+    ret->adresse = memory;
     ret->is_free = 0;
-    ret->size = size_zone - sizeof(t_header);
+    ret->size = size_zone;
     ret->next = NULL;
     return (ret);
 }
@@ -82,7 +84,10 @@ void *search_zone_free(t_header *list, size_t size, t_type type, int shift)
         if (list->is_free == 0 && list->size >= size)
         {
             list->is_free = 1;
-            return ((void *)(list + 1));
+            if (type == LARGE)
+                return ((list->adresse));
+            else
+                return ((void *)(list + 1));
         }
         if (list->next == NULL)
         {
@@ -91,7 +96,7 @@ void *search_zone_free(t_header *list, size_t size, t_type type, int shift)
             else if (type == SMALL)
                 list->next = load_zone(create_block(SIZE_SMALL * BLOCKS), shift, TRUE_SMALL);
             else
-                list->next = load_zone_large(create_block(size + sizeof(t_header)), size + sizeof(t_header));
+                list->next = load_zone_large(create_block(size), size);
         }
         list = list->next;   
     }
@@ -100,8 +105,6 @@ void *search_zone_free(t_header *list, size_t size, t_type type, int shift)
 
 void *malloc(size_t size)
 {
-    if (size <= 0)
-        return NULL;
     if (!glob.tiny_block && !glob.small_block && !glob.large_block){
         initializeBlock();
     }
@@ -118,7 +121,7 @@ void *malloc(size_t size)
         return(search_zone_free(glob.small_block, size, SMALL, 128));
     }
     if(glob.large_block == NULL){ 
-        glob.large_block = load_zone_large(create_block(size + sizeof(t_header)), size + sizeof(t_header));
+        glob.large_block = load_zone_large(create_block(size), size);
     }
     return (search_zone_free(glob.large_block, size, LARGE, 0));
 }

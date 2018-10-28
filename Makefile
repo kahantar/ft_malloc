@@ -13,15 +13,15 @@ CC = clang
 FLAG = -Weverything -g
 FLAG = -Wall -Wextra -Werror -g
 # LFT = ./libft/libft.a
-SRCS =	malloc.c\
-		ft_putnbr.c\
-		ft_putstr.c\
-		free.c\
-		ft_itoa_base.c\
-		ft_strlen.c\
-		realloc.c\
-		ft_memcpy.c\
-		show_alloc_mem.c
+SRCS =	srcs/malloc.c\
+		srcs/ft_putstr.c\
+		srcs/free.c\
+		srcs/ft_itoa_base.c\
+		srcs/ft_strlen.c\
+		srcs/realloc.c\
+		srcs/ft_memcpy.c\
+		srcs/show_alloc_mem.c\
+		srcs/ft_strcmp.c
 
 OBJS = $(SRCS:.c=.o)
 

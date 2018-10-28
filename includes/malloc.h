@@ -38,15 +38,17 @@ extern t_block             glob;
 int                 ft_addInList(int size, t_header **list);
 int                 ft_displayList(t_header *list);
 void                *malloc(size_t size);
-void                ft_putnbr(int n);
+// void                ft_putnbr(size_t n);
 void                ft_putchar(char c);
 void	            ft_putstr(char const *s);
 void                free(void *ptr);
-void                ft_itoa_base(size_t n, int base);
+void    ft_itoa_base(size_t n, int base);
 size_t	            ft_strlen(const char *str);
 void    *realloc(void *ptr, size_t size);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 void    show_alloc_mem();
+int		ft_strcmp(const char *s1, const char *s2);
+
 
 
 
