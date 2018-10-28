@@ -50,13 +50,11 @@ clean:
 	@printf "                                                               \r"
 	@printf "✅  all .o deleted\n"
 	@rm -f $(OBJS)
-	@make -s clean -C ./libft/
 
 fclean:
 	@printf "                                                               \r"
-	@printf "✅  libft.a, all .o and malloc deleted\n"
+	@printf "✅  all .o and malloc deleted\n"
 	@rm -f $(NAME) $(OBJS)
 	@rm -rf libft_malloc.so $(NAME)
-	@make -s fclean -C ./libft/
 
 re: fclean all
