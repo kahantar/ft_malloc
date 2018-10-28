@@ -12,7 +12,7 @@ NAME = libft_malloc_$(HOSTTYPE).so
 CC = clang
 FLAG = -Weverything -g
 FLAG = -Wall -Wextra -Werror -g
-# LFT = ./libft/libft.a
+
 SRCS =	srcs/malloc.c\
 		srcs/ft_putstr.c\
 		srcs/free.c\
@@ -25,13 +25,10 @@ SRCS =	srcs/malloc.c\
 
 OBJS = $(SRCS:.c=.o)
 
-INCLUDE = -I ./include \
-          -I ./libft
+INCLUDE = -I ./include
 ###########################_RELINK_MODIFY_.h####################################
 RELINK = ./include/malloc.h
 ################################################################################
-
-    # @make -j8 -s -C ./libft/
 
 all: $(NAME)
 
