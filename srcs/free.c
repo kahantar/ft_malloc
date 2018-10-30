@@ -1,5 +1,6 @@
 #include "../includes/malloc.h"
 
+t_mutex             mutex;
 
 int     search_alloc_large_free(void *ptr, t_header *list)
 {
@@ -49,9 +50,14 @@ int     search_alloc_free(void *ptr, t_header *list)
 
 void    free(void *ptr)
 {
-
+    if (pthread_mutex_lock(&mutex.m_free) == EINVAL)
+    {
+        pthread_mutex_init(&mutex.m_free, NULL);
+        pthread_mutex_lock(&mutex.m_free);
+    }
     if (ptr != NULL)
         if (!search_alloc_free(ptr, glob.tiny_block))
             if (!search_alloc_free(ptr, glob.small_block))
                 search_alloc_large_free(ptr, glob.large_block);
+    pthread_mutex_unlock(&mutex.m_free);
 }

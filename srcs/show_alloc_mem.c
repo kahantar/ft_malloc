@@ -1,4 +1,5 @@
 #include "../includes/malloc.h"
+t_mutex             mutex;
 
 int     check_block(t_header *list)
 {
@@ -61,7 +62,14 @@ void    put_block(t_header *list, char *str)
 
 void    show_alloc_mem()
 {
+    if (pthread_mutex_lock(&mutex.m_show_alloc_mem) == EINVAL)
+    {
+        pthread_mutex_init(&mutex.m_show_alloc_mem, NULL);
+        pthread_mutex_lock(&mutex.m_show_alloc_mem);
+    }
     put_block(glob.tiny_block, "TINY");
     put_block(glob.small_block, "SMALL");
     put_block_large(glob.large_block, "LARGE");
+    pthread_mutex_unlock(&mutex.m_show_alloc_mem);
+
 }

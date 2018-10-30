@@ -4,6 +4,8 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/mman.h>
+# include <pthread.h>
+# include <errno.h>
 
 # define SIZE_TINY  256
 # define SIZE_SMALL 4096
@@ -32,13 +34,20 @@ typedef enum		e_type
 	LARGE
 }					t_type;
 
+typedef struct        s_mutex
+{
+    pthread_mutex_t    m_malloc;
+    pthread_mutex_t    m_realloc;
+    pthread_mutex_t    m_free;
+    pthread_mutex_t    m_show_alloc_mem;
+}                    t_mutex;
+
 extern t_block             glob;
 
 
 int                 ft_addInList(int size, t_header **list);
 int                 ft_displayList(t_header *list);
 void                *malloc(size_t size);
-// void                ft_putnbr(size_t n);
 void                ft_putchar(char c);
 void	            ft_putstr(char const *s);
 void                free(void *ptr);
@@ -48,6 +57,7 @@ void    *realloc(void *ptr, size_t size);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 void    show_alloc_mem();
 int		ft_strcmp(const char *s1, const char *s2);
+void *search_zone_free(t_header *list, size_t size, t_type type, int shift);
 
 
 

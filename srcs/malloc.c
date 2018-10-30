@@ -1,11 +1,15 @@
 #include "../includes/malloc.h"
 
 t_block             glob;
+t_mutex             mutex;
+// mutex.m_malloc =  PTHREAD_MUTEX_INITIALIZER;
 
 void	ft_putchar(char c)
 {
 	write(1, &c, 1);
 }
+
+
 t_header    *load_zone(void *memory, int shift, size_t size)
 {
     t_header *list;
@@ -42,7 +46,7 @@ t_header    *load_zone_large(void *memory, size_t size)
     if (memory == NULL){
         return NULL;
     }
-    if(!(ret = malloc(sizeof(t_header*))))
+    if(!(ret = (t_header*)search_zone_free(glob.tiny_block, sizeof(t_header), TINY, 8)))
         return NULL;
     if ((size % 4096) == 0){
         size_zone = size;
@@ -79,6 +83,7 @@ void *search_zone_free(t_header *list, size_t size, t_type type, int shift)
 {
     t_header *tmp;
     tmp = list;
+   
     while (list)
     {
         if (list->is_free == 0 && list->size >= size)
@@ -105,6 +110,13 @@ void *search_zone_free(t_header *list, size_t size, t_type type, int shift)
 
 void *malloc(size_t size)
 {
+    void *ret;
+
+    if (pthread_mutex_lock(&mutex.m_malloc) == EINVAL)
+    {
+        pthread_mutex_init(&mutex.m_malloc, NULL);
+        pthread_mutex_lock(&mutex.m_malloc);
+    }
     if (!glob.tiny_block && !glob.small_block && !glob.large_block){
         initializeBlock();
     }
@@ -112,16 +124,20 @@ void *malloc(size_t size)
     {
         if(glob.tiny_block == NULL)
             glob.tiny_block = load_zone(create_block(SIZE_TINY * BLOCKS), 8, TRUE_TINY);
-        return(search_zone_free(glob.tiny_block, size, TINY, 8));
+        ret = (search_zone_free(glob.tiny_block, size, TINY, 8));
     }
     else if (size <= TRUE_SMALL)
     {
         if(glob.small_block == NULL)
             glob.small_block = load_zone(create_block(SIZE_SMALL * BLOCKS), 128, TRUE_SMALL);
-        return(search_zone_free(glob.small_block, size, SMALL, 128));
+        ret = (search_zone_free(glob.small_block, size, SMALL, 128));
     }
-    if(glob.large_block == NULL){ 
-        glob.large_block = load_zone_large(create_block(size), size);
+    else{
+        if(glob.large_block == NULL){ 
+            glob.large_block = load_zone_large(create_block(size), size);
+        }
+        ret = (search_zone_free(glob.large_block, size, LARGE, 0));
     }
-    return (search_zone_free(glob.large_block, size, LARGE, 0));
+    pthread_mutex_unlock(&mutex.m_malloc);
+    return ret;
 }
