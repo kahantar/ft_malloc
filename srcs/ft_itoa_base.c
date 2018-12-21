@@ -1,11 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_itoa_base.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kahantar <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/12 15:00:31 by kahantar          #+#    #+#             */
+/*   Updated: 2018/11/12 15:04:04 by kahantar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/malloc.h"
 
-
-void    ft_base(size_t n, int base, int i)
+void		ft_base(size_t n, int base, int i)
 {
 	char str[i];
 
-    str[i] = '\0';
+	str[i] = '\0';
 	if (base <= 10)
 	{
 		while (--i >= 0)
@@ -28,15 +39,15 @@ void    ft_base(size_t n, int base, int i)
 	ft_putstr(str);
 }
 
-void    ft_itoa_base(size_t n, int base)
+void		ft_itoa_base(size_t n, int base)
 {
 	size_t		x;
 	int			i;
 
 	i = 1;
 	x = n;
-    if (base == 16)
-        ft_putstr("0x");
+	if (base == 16)
+		ft_putstr("0x");
 	while (x >= (size_t)base)
 	{
 		x = x / base;

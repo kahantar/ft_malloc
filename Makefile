@@ -20,8 +20,10 @@ SRCS =	srcs/malloc.c\
 		srcs/ft_strlen.c\
 		srcs/realloc.c\
 		srcs/ft_memcpy.c\
+		srcs/tools.c\
 		srcs/show_alloc_mem.c\
-		srcs/ft_strcmp.c
+		srcs/ft_strcmp.c\
+		srcs/ft_putchar.c
 
 OBJS = $(SRCS:.c=.o)
 
